@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  title: PipelineMint API
+  version: 0.1.0
+  description: Public and internal API contract for lead operations.
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /leads:
+    get:
+      summary: List leads
+      responses:
+        '200':
+          description: Lead collection
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Lead' }
+    post:
+      summary: Create a lead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateLeadInput' }
+      responses:
+        '201': { description: Lead created }
+        '400': { description: Invalid input }
+components:
+  schemas:
+    Lead:
+      type: object
+      required: [id, name, company, source, value, score, stage, nextAction]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        company: { type: string }
+        source: { type: string, enum: [Website, Telegram, Referral, API] }
+        value: { type: number, minimum: 0 }
+        score: { type: integer, minimum: 0, maximum: 100 }
+        stage: { type: string, enum: [new, qualified, proposal, won] }
+        nextAction: { type: string }
+    CreateLeadInput:
+      type: object
+      required: [name, company]
+      properties:
+        name: { type: string, minLength: 1 }
+        company: { type: string, minLength: 1 }
+        source: { type: string }
+        value: { type: number, minimum: 0 }
