@@ -16,7 +16,7 @@ export default function Home() {
           <a className="textLink" href="#features">See product scope →</a>
         </div>
         <div className="proofRow">
-          <span>Multi-tenant</span><span>RBAC-ready</span><span>Webhook-first</span><span>RU/EN-ready</span>
+          <span>Typed domain model</span><span>OpenAPI contract</span><span>Tenant-scoped RLS schema</span><span>RU + EN seed data</span>
         </div>
       </section>
       <section id="features" className="featureGrid">
