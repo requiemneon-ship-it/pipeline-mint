@@ -2,8 +2,6 @@
 -- Tenant isolation: every business table carries workspace_id and is protected by RLS.
 -- Not applied by the demo app yet: milestone 1 serves in-memory seed data.
 
-create extension if not exists pgcrypto;
-
 create type member_role as enum ('admin', 'manager', 'member');
 create type lead_stage  as enum ('new', 'qualified', 'proposal', 'won');
 create type lead_source as enum ('Website', 'Telegram', 'Referral', 'API');

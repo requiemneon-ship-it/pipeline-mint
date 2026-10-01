@@ -19,7 +19,7 @@
 | Rule-based "sales brief" (deterministic, no LLM calls) | Implemented, unit-tested |
 | `GET/POST /api/leads` with input validation | Implemented (POST is non-persistent) |
 | OpenAPI 3.1 contract (`docs/openapi.yaml`) | Documented |
-| PostgreSQL / Supabase schema with tenant-scoped RLS (`supabase/migrations`) | Draft, not yet executed against a database |
+| PostgreSQL / Supabase schema with tenant-scoped RLS (`supabase/migrations`) | Applied and tested on PostgreSQL 18 (PGlite): tenant isolation, role rules, append-only audit log. Not connected to the app yet |
 | GitHub Actions CI: typecheck, tests, build | Configured |
 
 ## Quick start
@@ -52,15 +52,18 @@ src/lib/leads.ts            domain logic: scoring, validation, stats, brief (pur
 src/app/api/leads/route.ts  REST handler
 src/app/dashboard/page.tsx  dashboard UI (server component)
 tests/leads.test.mjs        unit tests for the domain layer
-supabase/migrations/        draft multi-tenant schema + RLS policies
+tests/schema.test.mjs       applies the SQL migration to a real PostgreSQL (PGlite) and checks RLS rules
+supabase/migrations/        multi-tenant schema + RLS policies
 docs/                       architecture, data model, OpenAPI
 ```
 
 Domain logic is kept free of framework code so it can be tested without a browser or server and reused when a real database is added.
 
+> The schema tests use a local stand-in for Supabase's `auth` schema (`auth.uid()` and the `authenticated` role), so they verify the policies' logic, not a live Supabase project.
+
 ## Roadmap
 
-1. Persistence & identity — apply the Supabase schema, auth, RBAC.
+1. Persistence & identity — connect the app to the Supabase schema, auth, RBAC.
 2. Lead capture — public form, signed webhooks, Telegram connector.
 3. AI layer — LLM adapter behind the existing `salesBrief` signature, queue-backed enrichment.
 4. Hardening — audit log, rate limiting, idempotency keys, E2E tests, deployment.
